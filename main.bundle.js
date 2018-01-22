@@ -1415,7 +1415,7 @@ var ApiService = (function () {
     function ApiService(httpClient, router) {
         this.httpClient = httpClient;
         this.router = router;
-        this.apiHost = 'http://18.220.89.28:8080';
+        this.apiHost = 'https://18.220.89.28:8080';
     }
     ApiService.prototype.get = function (path, options) {
         var _this = this;
