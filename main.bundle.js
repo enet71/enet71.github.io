@@ -474,6 +474,7 @@ var GoogleMapComponent = (function () {
         }
         this.currentMapZone.setListener(function (a) {
         });
+        this.focusOnZone(this.currentMapZone);
     };
     GoogleMapComponent.prototype.createNewZone = function () {
         if (this.currentMapZone) {
@@ -493,6 +494,10 @@ var GoogleMapComponent = (function () {
             mapZone.mapZone.clearPointsList();
         });
         this.mapZones = [];
+    };
+    GoogleMapComponent.prototype.focusOnZone = function (zone) {
+        this.map.setCenter(zone.getCenter());
+        this.map.setZoom(13);
     };
     // --------------------------------------------Point------------------------------------------------------------------
     GoogleMapComponent.prototype.addPoint = function (latLng) {
@@ -629,6 +634,23 @@ var MapZone = (function () {
     };
     MapZone.prototype.clearPointsList = function () {
         this.polygon.setMap(null);
+    };
+    MapZone.prototype.getCenter = function () {
+        var points = this.getPoints().getArray();
+        var latArray = [];
+        var lngArray = [];
+        points.forEach(function (point) {
+            latArray.push(point.lat());
+            lngArray.push(point.lng());
+        });
+        var maxLat = Math.max.apply(Math, latArray);
+        var minLat = Math.min.apply(Math, latArray);
+        var maxLng = Math.max.apply(Math, lngArray);
+        var minLng = Math.min.apply(Math, lngArray);
+        return {
+            lat: minLat + ((maxLat - minLat) / 2),
+            lng: minLng + ((maxLng - minLng) / 2)
+        };
     };
     return MapZone;
 }());
@@ -1389,11 +1411,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var ApiService = (function () {
+    // private apiHost = 'http://127.0.0.1:8080';
     function ApiService(httpClient, router) {
         this.httpClient = httpClient;
         this.router = router;
-        // private apiHost = 'http://18.220.89.28:8080';
-        this.apiHost = 'http://127.0.0.1:8080';
+        this.apiHost = 'http://18.220.89.28:8080';
     }
     ApiService.prototype.get = function (path, options) {
         var _this = this;
@@ -1644,7 +1666,13 @@ var AuthenticationService = (function () {
     };
     Object.defineProperty(AuthenticationService.prototype, "isAuthenticated", {
         get: function () {
-            return this._isAuthenticated || !!localStorage.getItem('token');
+            if (this._isAuthenticated || !!localStorage.getItem('token')) {
+                return true;
+            }
+            if (this.router.url !== '/login') {
+                this.router.navigate(['/login']);
+            }
+            return false;
         },
         set: function (value) {
             this._isAuthenticated = value;
