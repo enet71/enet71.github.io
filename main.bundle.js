@@ -38,7 +38,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div style=\"overflow: hidden; position: relative; height: 100%\">\r\n  <app-navigation></app-navigation>\r\n  <router-outlet></router-outlet>\r\n</div>\r\n\r\n\r\n"
+module.exports = "<div style=\"overflow: hidden; position: relative; height: 100%\">\r\n  <app-navigation *ngIf=\"authenticationService.isAuthenticated\"></app-navigation>\r\n  <router-outlet></router-outlet>\r\n</div>\r\n\r\n\r\n"
 
 /***/ }),
 
@@ -48,23 +48,29 @@ module.exports = "<div style=\"overflow: hidden; position: relative; height: 100
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__shared_authentication_authentication_service__ = __webpack_require__("../../../../../src/app/shared/authentication/authentication.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
 
 var AppComponent = (function () {
-    function AppComponent() {
-        this.title = 'app';
+    function AppComponent(authenticationService) {
+        this.authenticationService = authenticationService;
     }
     AppComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
             selector: 'app-root',
             template: __webpack_require__("../../../../../src/app/app.component.html"),
             styles: [__webpack_require__("../../../../../src/app/app.component.css")]
-        })
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__shared_authentication_authentication_service__["a" /* AuthenticationService */]])
     ], AppComponent);
     return AppComponent;
 }());
@@ -77,10 +83,15 @@ var AppComponent = (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return ServerStatus; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AuthenticationEvents; });
 /* unused harmony export ObserveType */
 /* unused harmony export ResponseType */
 /* unused harmony export REQUEST_OPTIONS */
+var ServerStatus;
+(function (ServerStatus) {
+    ServerStatus[ServerStatus["UNAUTHORIZED"] = 500] = "UNAUTHORIZED";
+})(ServerStatus || (ServerStatus = {}));
 var AuthenticationEvents;
 (function (AuthenticationEvents) {
     AuthenticationEvents["LOGIN"] = "login";
@@ -159,7 +170,7 @@ var AppModule = (function () {
     AppModule = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["I" /* NgModule */])({
             imports: [
-                __WEBPACK_IMPORTED_MODULE_6__angular_router__["a" /* RouterModule */].forRoot(__WEBPACK_IMPORTED_MODULE_7__app_routes__["a" /* ROUTES */], { useHash: true }),
+                __WEBPACK_IMPORTED_MODULE_6__angular_router__["b" /* RouterModule */].forRoot(__WEBPACK_IMPORTED_MODULE_7__app_routes__["a" /* ROUTES */], { useHash: true }),
                 __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
                 __WEBPACK_IMPORTED_MODULE_8__map_map_module__["a" /* MapModule */],
                 __WEBPACK_IMPORTED_MODULE_9__angular_common_http__["b" /* HttpClientModule */],
@@ -191,8 +202,8 @@ var AppModule = (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ROUTES; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__login_login_component__ = __webpack_require__("../../../../../src/app/login/login.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__main_main_component__ = __webpack_require__("../../../../../src/app/main/main.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__map_map_component__ = __webpack_require__("../../../../../src/app/map/map.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__map_map_component__ = __webpack_require__("../../../../../src/app/map/map.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__shared_authentication_authentication_guard__ = __webpack_require__("../../../../../src/app/shared/authentication/authentication.guard.ts");
 
 
 
@@ -200,19 +211,21 @@ var ROUTES = [
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: '/main'
+        redirectTo: '/map'
     },
     {
         path: 'login',
         component: __WEBPACK_IMPORTED_MODULE_0__login_login_component__["a" /* LoginComponent */]
     },
-    {
-        path: 'main',
-        component: __WEBPACK_IMPORTED_MODULE_1__main_main_component__["a" /* MainComponent */]
-    },
+    /* {
+       path: 'main',
+       component: MainComponent,
+       canActivate: [AuthenticationGuard]
+     },*/
     {
         path: 'map',
-        component: __WEBPACK_IMPORTED_MODULE_2__map_map_component__["a" /* MapComponent */]
+        component: __WEBPACK_IMPORTED_MODULE_1__map_map_component__["a" /* MapComponent */],
+        canActivate: [__WEBPACK_IMPORTED_MODULE_2__shared_authentication_authentication_guard__["a" /* AuthenticationGuard */]]
     }
 ];
 
@@ -227,7 +240,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, ".login-page {\r\n  height: 100vh;\r\n  display: -webkit-box;\r\n  display: -ms-flexbox;\r\n  display: flex;\r\n  -webkit-box-pack: center;\r\n      -ms-flex-pack: center;\r\n          justify-content: center;\r\n  -webkit-box-align: center;\r\n      -ms-flex-align: center;\r\n          align-items: center;\r\n}\r\n\r\n.login-back {\r\n  z-index: -1;\r\n  position: absolute;\r\n  left: 0;\r\n  right: 0;\r\n  height: 100%;\r\n  width: 100%;\r\n  background-image: url(" + __webpack_require__("../../../../../src/assets/images/noutbuk-klaviatura-mysh-stol.jpg") + ");\r\n  background-size: cover;\r\n  background-repeat: no-repeat;\r\n}\r\n\r\n.login-panel {\r\n  padding: 10px;\r\n  border-radius: 3px;\r\n}\r\n\r\n.login-row {\r\n  margin-bottom: 10px;\r\n  text-align: center;\r\n}\r\n\r\n.login-row input {\r\n  background: none;\r\n  border-left: none;\r\n  border-top: none;\r\n  border-right: none;\r\n  border-bottom: 1px solid #e2e2e2;\r\n  outline: none;\r\n  padding: 5px;\r\n  width: 300px;\r\n  transition: all 0.5s;\r\n  font-size: 14px;\r\n  color: #f6f6f6;\r\n}\r\n\r\n.login-row input:focus {\r\n  border-bottom: 1px solid #e21113;\r\n  width: 320px;\r\n  margin: 5px;\r\n  font-size: 15px;\r\n}\r\n\r\n.login-row input::-webkit-input-placeholder {\r\n  color: #cccccc;\r\n}\r\n\r\n.login-row input:focus::-webkit-input-placeholder {\r\n  color: rgba(255, 255, 255, 0.1);\r\n}\r\n\r\n.login-row button {\r\n  background: none;\r\n  border: none;\r\n  color: white;\r\n  cursor: pointer;\r\n}\r\n", ""]);
+exports.push([module.i, ".login-page {\r\n  height: 100vh;\r\n  display: -webkit-box;\r\n  display: -ms-flexbox;\r\n  display: flex;\r\n  -webkit-box-pack: center;\r\n      -ms-flex-pack: center;\r\n          justify-content: center;\r\n  -webkit-box-align: center;\r\n      -ms-flex-align: center;\r\n          align-items: center;\r\n}\r\n\r\n.login-back {\r\n  z-index: -1;\r\n  position: absolute;\r\n  left: 0;\r\n  right: 0;\r\n  height: 100%;\r\n  width: 100%;\r\n  background-image: url(" + __webpack_require__("../../../../../src/assets/images/noutbuk-klaviatura-mysh-stol.jpg") + ");\r\n  background-size: cover;\r\n  background-repeat: no-repeat;\r\n}\r\n\r\n.login-panel {\r\n  padding: 10px;\r\n  border-radius: 3px;\r\n}\r\n\r\n.login-row {\r\n  margin-bottom: 20px;\r\n  text-align: center;\r\n}\r\n\r\n.login-row input {\r\n  background: none;\r\n  border-left: none;\r\n  border-top: none;\r\n  border-right: none;\r\n  border-bottom: 1px solid #e2e2e2;\r\n  outline: none;\r\n  padding: 5px;\r\n  width: 300px;\r\n  transition: all 0.5s;\r\n  font-size: 14px;\r\n  color: #f6f6f6;\r\n}\r\n\r\n.login-row input:focus {\r\n  border-bottom: 1px solid #e21113;\r\n  width: 320px;\r\n  margin: 5px;\r\n  font-size: 15px;\r\n}\r\n\r\n.login-row input::-webkit-input-placeholder {\r\n  color: #cccccc;\r\n}\r\n\r\n.login-row input:focus::-webkit-input-placeholder {\r\n  color: rgba(255, 255, 255, 0.1);\r\n}\r\n\r\n.login-row button {\r\n  background: none;\r\n  border: none;\r\n  color: white;\r\n  cursor: pointer;\r\n}\r\n", ""]);
 
 // exports
 
@@ -270,12 +283,10 @@ var LoginComponent = (function () {
         this.apiService = apiService;
     }
     LoginComponent.prototype.ngOnInit = function () {
+        this.authenticationService.logout();
     };
     LoginComponent.prototype.onLogIn = function () {
         this.authenticationService.login(this.login, this.password);
-    };
-    LoginComponent.prototype.onLogOut = function () {
-        this.authenticationService.logout();
     };
     LoginComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
@@ -413,7 +424,7 @@ var GoogleMapComponent = (function () {
         });
         this.map.addListener('click', function (event) {
             _this.editPoint(event.latLng);
-            if (_this.currentMapZone) {
+            if (_this.currentMapZone && _this.mapService.isEditZone) {
                 _this.currentMapZone.addPoint(event.latLng);
             }
         });
@@ -424,6 +435,9 @@ var GoogleMapComponent = (function () {
             _this.selectZone(zone);
         });
         this.mapService.newZoneSubject.subscribe(function () {
+            _this.createNewZone();
+        });
+        this.mapService.clearZoneSubject.subscribe(function () {
             _this.createNewZone();
         });
     };
@@ -459,7 +473,6 @@ var GoogleMapComponent = (function () {
             }); });
         }
         this.currentMapZone.setListener(function (a) {
-            console.log('click', a);
         });
     };
     GoogleMapComponent.prototype.createNewZone = function () {
@@ -549,6 +562,10 @@ var MapZone = (function () {
                 return { lat: point.latitude, lng: point.longitude };
             });
             this.setPoints(this.points);
+            this.setOptions({
+                strokeColor: this.zone.strokeColor,
+                fillColor: this.zone.fillColor
+            });
         }
     }
     MapZone.prototype.initZone = function () {
@@ -569,15 +586,16 @@ var MapZone = (function () {
         this.polygon.setPath(points);
         this.updatePoints();
     };
+    MapZone.prototype.setOptions = function (options) {
+        this.polygon.setOptions(options);
+    };
     MapZone.prototype.updatePoints = function () {
         var _this = this;
         this.createZonePoints();
         google.maps.event.addListener(this.polygon.getPath(), 'insert_at', function (index, obj) {
-            console.log('1', index, obj);
             _this.createZonePoints();
         });
         google.maps.event.addListener(this.polygon.getPath(), 'set_at', function (index, obj) {
-            console.log('2', index, obj);
             _this.createZonePoints();
         });
     };
@@ -591,7 +609,6 @@ var MapZone = (function () {
     };
     MapZone.prototype.createZonePoints = function () {
         var _this = this;
-        console.log(this.zone);
         this.mapService.zonePointsSubject.next(this.getPoints().getArray().map(function (point, index) {
             var resultPoint = {
                 latitude: point.lat(),
@@ -777,9 +794,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 var MapService = (function () {
     function MapService() {
-        this.isEditPoint = false;
+        // ------------------------------------------Zone---------------------------------------------------------------------
         this.isEditZone = false;
         this.newZoneSubject = new __WEBPACK_IMPORTED_MODULE_3_rxjs_Subject__["a" /* Subject */]();
+        this.clearZoneSubject = new __WEBPACK_IMPORTED_MODULE_3_rxjs_Subject__["a" /* Subject */]();
         this.zonesSubject = new __WEBPACK_IMPORTED_MODULE_1_rxjs_BehaviorSubject__["a" /* BehaviorSubject */](null);
         this.zonesObservable = this.zonesSubject
             .asObservable()
@@ -796,6 +814,8 @@ var MapService = (function () {
         this.editPointObservable = this.editPointSubject
             .asObservable()
             .pipe(Object(__WEBPACK_IMPORTED_MODULE_2_rxjs_operators__["a" /* filter */])(function (points) { return points !== null; }));
+        // --------------------------------------------Point------------------------------------------------------------------
+        this.isEditPoint = false;
         this.pointsSubject = new __WEBPACK_IMPORTED_MODULE_1_rxjs_BehaviorSubject__["a" /* BehaviorSubject */](null);
         this.pointsObservable = this.pointsSubject
             .asObservable()
@@ -833,7 +853,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/map/right-panel/create/create.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"form-panel\">\n  <div class=\"input-row\">\n    <label [for]=\"editEntity?.title\">{{editEntity?.title}}</label>\n    <select [id]=\"editEntity?.title\"\n            class=\"input\"\n            [formControl]=\"chooseFormControl\">\n      <option *ngFor=\"let element of editEntity.data\" [ngValue]=\"element\">\n        {{element.title}}\n      </option>\n    </select>\n    <button (click)=\"createNewInstance()\">New</button>\n  </div>\n  <div [formGroup]=\"formGroup\" class=\"add-panel\" *ngIf=\"isEdit\">\n    <div *ngFor=\"let field of editEntity?.fields\" class=\"input-row\">\n      <label [for]=\"field.id\">{{field.name}}</label>\n      <ng-container [ngSwitch]=\"field.type\">\n        <input *ngSwitchCase=\"fieldType.input\"\n               [formControlName]=\"field.id\"\n               [attr.id]=\"field.id\"\n               class=\"input\"\n               name=\"countryId\">\n        <select *ngSwitchCase=\"fieldType.select\"\n                [formControlName]=\"field.id\"\n                [attr.id]=\"field.id\"\n                class=\"input\"\n                name=\"countryId\">\n          <option *ngFor=\"let fieldElement of field.data\" [ngValue]=\"fieldElement\">\n            {{fieldElement.title}}\n          </option>\n        </select>\n      </ng-container>\n      <button (click)=\"clearField(field.id)\">\n        <i class=\"fa fa-times\" aria-hidden=\"true\"></i>\n      </button>\n    </div>\n    <div class=\"add-footer\">\n      <button class=\"close\" (click)=\"toggleEditPanel()\">Close</button>\n      <button class=\"clear\" (click)=\"clear()\">Clear</button>\n      <button class=\"create\" (click)=\"create()\">Create</button>\n    </div>\n  </div>\n</div>\n\n\n"
+module.exports = "<div class=\"form-panel\">\n  <div class=\"input-row\">\n    <label [for]=\"editEntity?.title\">{{editEntity?.title}}</label>\n    <select [id]=\"editEntity?.title\"\n            class=\"input\"\n            [formControl]=\"chooseFormControl\">\n      <option *ngFor=\"let element of editEntity.data\" [ngValue]=\"element\">\n        {{element.title}}\n      </option>\n    </select>\n    <button (click)=\"createNewInstance()\">New</button>\n  </div>\n  <div [formGroup]=\"formGroup\" class=\"add-panel\" *ngIf=\"isEdit\">\n    <div *ngFor=\"let field of editEntity?.fields\" class=\"input-row\">\n      <label [for]=\"field.id\">{{field.name}}</label>\n      <ng-container [ngSwitch]=\"field.type\">\n        <input *ngSwitchCase=\"fieldType.input\"\n               [formControlName]=\"field.id\"\n               [attr.id]=\"field.id\"\n               class=\"input\"\n               name=\"countryId\">\n        <select *ngSwitchCase=\"fieldType.select\"\n                [formControlName]=\"field.id\"\n                [attr.id]=\"field.id\"\n                class=\"input\"\n                name=\"countryId\">\n          <option *ngFor=\"let fieldElement of field.data\" [ngValue]=\"fieldElement\">\n            {{fieldElement.title}}\n          </option>\n        </select>\n      </ng-container>\n      <button (click)=\"clearField(field.id)\">\n        <i class=\"fa fa-times\" aria-hidden=\"true\"></i>\n      </button>\n    </div>\n    <div class=\"add-footer\">\n      <button class=\"close\" (click)=\"onClose()\">Close</button>\n      <button class=\"clear\" (click)=\"clear()\">Clear</button>\n      <button class=\"create\" (click)=\"create()\">Create</button>\n    </div>\n  </div>\n</div>\n\n\n"
 
 /***/ }),
 
@@ -847,6 +867,7 @@ module.exports = "<div class=\"form-panel\">\n  <div class=\"input-row\">\n    <
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__("../../../forms/esm5/forms.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__map_interfaces__ = __webpack_require__("../../../../../src/app/map/map.interfaces.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__edit_entity__ = __webpack_require__("../../../../../src/app/map/right-panel/create/edit-entity.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__shared_utils__ = __webpack_require__("../../../../../src/app/shared/utils.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -856,6 +877,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -887,6 +909,7 @@ var CreateComponent = (function () {
                 return;
             }
             _this.editEntity.onSelectItem(value);
+            _this.toggleEditPanel(true);
             Object.keys(_this.formGroup.controls).forEach(function (key) {
                 _this.formGroup.controls[key].setValue(value[key]);
             });
@@ -912,19 +935,27 @@ var CreateComponent = (function () {
     };
     CreateComponent.prototype.clear = function () {
         this.formGroup.reset();
+        this.editEntity.onClear();
     };
     CreateComponent.prototype.clearField = function (id) {
         this.formGroup.controls[id].reset();
     };
-    CreateComponent.prototype.toggleEditPanel = function () {
-        this.isEdit = !this.isEdit;
+    CreateComponent.prototype.toggleEditPanel = function (isEdit) {
+        this.isEdit = __WEBPACK_IMPORTED_MODULE_5__shared_utils__["a" /* Utils */].isPresent(isEdit) ? isEdit : !this.isEdit;
         this.editEntity.onToggleEdit(this.isEdit);
+    };
+    CreateComponent.prototype.onClose = function () {
+        this.isEdit = false;
+        this.clear();
+        this.editEntity.onToggleEdit(this.isEdit);
+        this.chooseFormControl.reset();
     };
     CreateComponent.prototype.createNewInstance = function () {
         this.isEdit = true;
         this.clear();
         this.editEntity.createNewInstance();
         this.chooseFormControl.reset();
+        this.editEntity.onToggleEdit(this.isEdit);
     };
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["D" /* Input */])(),
@@ -981,6 +1012,8 @@ var EditEntity = (function () {
     EditEntity.prototype.onToggleEdit = function (isEdit) {
     };
     EditEntity.prototype.createNewInstance = function () {
+    };
+    EditEntity.prototype.onClear = function () {
     };
     return EditEntity;
 }());
@@ -1163,6 +1196,12 @@ var RightPanelComponent = (function () {
         this.zoneEntity.createNewInstance = function () {
             _this.mapService.newZoneSubject.next();
         };
+        this.zoneEntity.onClear = function () {
+            _this.mapService.clearZoneSubject.next();
+        };
+        this.zoneEntity.onToggleEdit = function (isEdit) {
+            _this.mapService.isEditZone = isEdit;
+        };
     };
     RightPanelComponent.prototype.initRaceEntity = function () {
     };
@@ -1252,7 +1291,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/navigation/navigation.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<nav>\r\n  <ul>\r\n    <li>\r\n      <a [routerLink]=\"'/main'\">Home</a>\r\n    </li>\r\n    <li>\r\n      <a [routerLink]=\"'/map'\">Map</a>\r\n    </li>\r\n  </ul>\r\n  <ul>\r\n    <li>\r\n      <a [routerLink]=\"'/main'\">Log in1</a>\r\n    </li>\r\n    <li>\r\n      <a [routerLink]=\"'/main'\">Log out</a>\r\n    </li>\r\n  </ul>\r\n</nav>\r\n\r\n"
+module.exports = "<nav>\r\n  <ul>\r\n    <li>\r\n      <a [routerLink]=\"'/map'\">Map</a>\r\n    </li>\r\n  </ul>\r\n  <ul style=\"position: absolute; right: 10px\">\r\n    <li>\r\n      <a [routerLink]=\"'/login'\">Log out</a>\r\n    </li>\r\n  </ul>\r\n</nav>\r\n\r\n"
 
 /***/ }),
 
@@ -1332,6 +1371,9 @@ var ApiModule = (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ApiService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common_http__ = __webpack_require__("../../../common/esm5/http.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_operators__ = __webpack_require__("../../../../rxjs/_esm5/operators.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__("../../../router/esm5/router.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_constants__ = __webpack_require__("../../../../../src/app/app.constants.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1343,15 +1385,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
+
+
 var ApiService = (function () {
-    function ApiService(httpClient) {
+    function ApiService(httpClient, router) {
         this.httpClient = httpClient;
+        this.router = router;
         // private apiHost = 'http://18.220.89.28:8080';
         this.apiHost = 'http://127.0.0.1:8080';
     }
     ApiService.prototype.get = function (path, options) {
+        var _this = this;
         if (options === void 0) { options = {}; }
-        return this.httpClient.get(this.getPath(path), this.getOptions(options));
+        return this.httpClient.get(this.getPath(path), this.getOptions(options))
+            .pipe(Object(__WEBPACK_IMPORTED_MODULE_2_rxjs_operators__["c" /* tap */])(null, function (response) { return _this.responseError(response); }));
     };
     ApiService.prototype.put = function (path, body, options) {
         if (options === void 0) { options = {}; }
@@ -1374,9 +1422,15 @@ var ApiService = (function () {
         options.headers = headers;
         return options;
     };
+    ApiService.prototype.responseError = function (response) {
+        if (response.status === __WEBPACK_IMPORTED_MODULE_4__app_constants__["b" /* ServerStatus */].UNAUTHORIZED) {
+            this.router.navigate(['/login']);
+        }
+    };
     ApiService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["A" /* Injectable */])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_common_http__["a" /* HttpClient */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_common_http__["a" /* HttpClient */],
+            __WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */]])
     ], ApiService);
     return ApiService;
 }());
@@ -1446,6 +1500,43 @@ var AuthenticationComponent = (function () {
 
 /***/ }),
 
+/***/ "../../../../../src/app/shared/authentication/authentication.guard.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AuthenticationGuard; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__authentication_service__ = __webpack_require__("../../../../../src/app/shared/authentication/authentication.service.ts");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var AuthenticationGuard = (function () {
+    function AuthenticationGuard(authenticationService) {
+        this.authenticationService = authenticationService;
+    }
+    AuthenticationGuard.prototype.canActivate = function (next, state) {
+        console.log(this.authenticationService.isAuthenticated);
+        return this.authenticationService.isAuthenticated;
+    };
+    AuthenticationGuard = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["A" /* Injectable */])(),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__authentication_service__["a" /* AuthenticationService */]])
+    ], AuthenticationGuard);
+    return AuthenticationGuard;
+}());
+
+
+
+/***/ }),
+
 /***/ "../../../../../src/app/shared/authentication/authentication.module.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1454,12 +1545,14 @@ var AuthenticationComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common__ = __webpack_require__("../../../common/esm5/common.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__authentication_service__ = __webpack_require__("../../../../../src/app/shared/authentication/authentication.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__authentication_guard__ = __webpack_require__("../../../../../src/app/shared/authentication/authentication.guard.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -1473,7 +1566,8 @@ var AuthenticationModule = (function () {
             ],
             declarations: [],
             providers: [
-                __WEBPACK_IMPORTED_MODULE_2__authentication_service__["a" /* AuthenticationService */]
+                __WEBPACK_IMPORTED_MODULE_2__authentication_service__["a" /* AuthenticationService */],
+                __WEBPACK_IMPORTED_MODULE_3__authentication_guard__["a" /* AuthenticationGuard */]
             ]
         })
     ], AuthenticationModule);
@@ -1495,6 +1589,7 @@ var AuthenticationModule = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__user_user_service__ = __webpack_require__("../../../../../src/app/user/user.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_BehaviorSubject__ = __webpack_require__("../../../../rxjs/_esm5/BehaviorSubject.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_constants__ = __webpack_require__("../../../../../src/app/app.constants.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__angular_router__ = __webpack_require__("../../../router/esm5/router.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1510,12 +1605,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var AuthenticationService = (function () {
-    function AuthenticationService(apiService, userService) {
+    function AuthenticationService(apiService, userService, router) {
+        var _this = this;
         this.apiService = apiService;
         this.userService = userService;
+        this.router = router;
+        this._isAuthenticated = false;
         this.authenticationObject = new __WEBPACK_IMPORTED_MODULE_4_rxjs_BehaviorSubject__["a" /* BehaviorSubject */](null);
         this.$authenticationEvent = this.authenticationObject.asObservable().pipe(Object(__WEBPACK_IMPORTED_MODULE_2_rxjs_operators__["a" /* filter */])(function (value) { return value !== null; }));
+        this.$authenticationEvent.subscribe(function (event) {
+            if (event === __WEBPACK_IMPORTED_MODULE_5__app_constants__["a" /* AuthenticationEvents */].LOGOUT) {
+                _this.isAuthenticated = false;
+            }
+        });
     }
     AuthenticationService.prototype.login = function (login, password) {
         var _this = this;
@@ -1527,17 +1631,32 @@ var AuthenticationService = (function () {
             .subscribe(function (user) {
             _this.userService.setUser(user);
             _this.authenticationObject.next(__WEBPACK_IMPORTED_MODULE_5__app_constants__["a" /* AuthenticationEvents */].LOGIN);
+            _this.isAuthenticated = true;
+            _this.router.navigate(['/map']);
         }, function (error) {
+            _this.isAuthenticated = false;
         });
     };
     AuthenticationService.prototype.logout = function () {
-        this.apiService.delete('token');
+        localStorage.removeItem('token');
         this.userService.setUser(null);
         this.authenticationObject.next(__WEBPACK_IMPORTED_MODULE_5__app_constants__["a" /* AuthenticationEvents */].LOGOUT);
     };
+    Object.defineProperty(AuthenticationService.prototype, "isAuthenticated", {
+        get: function () {
+            return this._isAuthenticated || !!localStorage.getItem('token');
+        },
+        set: function (value) {
+            this._isAuthenticated = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
     AuthenticationService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["A" /* Injectable */])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__api_api_service__["a" /* ApiService */], __WEBPACK_IMPORTED_MODULE_3__user_user_service__["a" /* UserService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__api_api_service__["a" /* ApiService */],
+            __WEBPACK_IMPORTED_MODULE_3__user_user_service__["a" /* UserService */],
+            __WEBPACK_IMPORTED_MODULE_6__angular_router__["a" /* Router */]])
     ], AuthenticationService);
     return AuthenticationService;
 }());
@@ -1586,6 +1705,24 @@ var SharedModule = (function () {
         })
     ], SharedModule);
     return SharedModule;
+}());
+
+
+
+/***/ }),
+
+/***/ "../../../../../src/app/shared/utils.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Utils; });
+var Utils = (function () {
+    function Utils() {
+    }
+    Utils.isPresent = function (obj) {
+        return obj !== undefined && obj !== null;
+    };
+    return Utils;
 }());
 
 
